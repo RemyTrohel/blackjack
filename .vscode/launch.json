@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Play",
+            "request": "launch",
+            "mainClass": "fr.atelierjava.blackjack.Play",
+            "projectName": "blackjack_b0a1ba74"
+        }
+    ]
+}

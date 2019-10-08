@@ -15,6 +15,7 @@ public class Play {
         Player player = new Player("Player");
         Player[] opponents = {dealer, player};
         this.opponents = opponents;
+        this.welcomeMessage();
     }
 
     public Deck getDeck() {
@@ -33,8 +34,41 @@ public class Play {
         this.opponents = opponents;
     }
 
-    public String getScores() {
-        return "Your score : " + this.getOpponents()[1].getBestResult() + "\nDealer score : " + this.getOpponents()[0].getBestResult();
+    public void showScores() {
+        System.out.println("\nYour score : " + this.getOpponents()[1].getBestResult());
+        System.out.println("Dealer score : " + this.getOpponents()[0].getBestResult());
+    }
+
+    public void showHands(boolean hiddenCard) {
+        System.out.println("\nYour current cards : " + this.opponents[1].showHand());
+        System.out.println("Dealer current cards : " + this.opponents[0].showHand() + (hiddenCard ? "#" : ""));
+    }
+
+    public void showWinner(Player winner) {
+        System.out.println("\n*********************************************************");            
+        if (winner.getName().equals("Player")) {
+            System.out.println("\t\t\tYOU WIN !");
+        } else {
+            System.out.println("\t\t\tYOU LOSE !");
+        }
+        System.out.println("*********************************************************");
+    }
+
+    public boolean replay() {
+        System.out.println("\nDo you wish to try again ? Yes : 'Y' / No : 'N'");
+        String choice = "";
+        while (!choice.toUpperCase().equals("Y") && !choice.toUpperCase().equals("N")) {
+            choice = scanner.next();
+        }
+        return choice.toUpperCase().equals("Y");
+    }
+
+    public void welcomeMessage() {
+        System.out.println("*********************************************************");
+        System.out.println("*                                                       *");
+        System.out.println("*                                                       *");
+        System.out.println("*                                                       *");
+        System.out.println("*********************************************************");
     }
 
     public Player game() {
@@ -49,7 +83,6 @@ public class Play {
             player.getCards().add(card);
             cards.remove(0);
         }
-        System.out.println("** Your current cards : " + player.showHand() + "**");
 
         // The dealer gives one card face up and one card face down to himself.
         card = cards.get(0);
@@ -57,38 +90,37 @@ public class Play {
         cards.remove(0);
         int hiddenCard = cards.get(0);
         cards.remove(0);
-        System.out.println("** Dealer current cards : " + dealer.showHand() + "## **");
 
-        System.out.println("\n" + this.getScores() + "\n");
         // The player must decide whether to ask for another card in an attempt to get closer to 21, or to stop
         while (player.getTotal(false) < 21 && player.getTotal(true) != 21 && playing) {
-            System.out.println("Do you wish to get another card ? Yes : 1 / No : 2");
-            int choice = 0;
-            while (choice != 1 && choice != 2) {
-                choice = scanner.nextInt();
+            this.showHands(true);
+            System.out.print("\nDo you wish to get another card ? Yes : 'Y' / No : 'N' \n> ");
+            String choice = "";
+            while (!choice.toUpperCase().equals("Y") && !choice.toUpperCase().equals("N")) {
+                choice = scanner.next();
             }
-            if (choice == 1) {
+            if (choice.toUpperCase().equals("Y")) {
                 card = cards.get(0);
                 player.getCards().add(card);
                 cards.remove(0);
             } else {
                 playing = false;
             }
-            System.out.println("You picked the card : " + card);
-            System.out.println("\n** Your current cards : " + player.showHand() + "**");
+            System.out.println("\n\t\tYou picked the card : " + card);
         }
+        
+        // The dealer will turn up his face-down card :
+        dealer.getCards().add(hiddenCard);
+        System.out.println("\n\t\tThe dealer reveals his card : " + hiddenCard);
+        this.showHands(false);
 
         // If the player score is over 21, the dealer wins and the play stops.
-        System.out.println("\n" + this.getScores() + "\n");
+        this.showScores();
         if (player.getTotal(true) == 21 || player.getTotal(false) == 21) {
             return player;
         } else if (player.getTotal(false) > 21) {
             return dealer;
         }
-
-        // The dealer will turn up his face-down card :
-        dealer.getCards().add(hiddenCard);
-        System.out.println("The dealer reveals his card : " + hiddenCard);
 
         // if the total is 17 or more, he must stop.
         // if the total is 16 or under, he must take a new card.
@@ -97,10 +129,11 @@ public class Play {
         while (dealer.getTotal(false) < 17 && dealer.getTotal(true) <= 21) {
             card = cards.get(0);
             dealer.getCards().add(card);
+            System.out.println("\n\t\tThe dealer pick anoter card : " + card);
             cards.remove(0);
         }
 
-        System.out.println("\n" + this.getScores() + "\n");
+        this.showHands(false);
         // If the dealer score is over 21, the player wins.
         if (dealer.getTotal(false) > 21) {
             return player;
@@ -118,15 +151,9 @@ public class Play {
         while (playing) {
             Play play = new Play();
             Player winner = play.game();
-            System.out.println("\tThe winner is " + winner.getName());
-            System.out.println("**********************************************");
-            // Ask the player for a replay
-            System.out.println("\nDo you wish to try again ? Yes : 1 / No : 2");
-            int choice = 0;
-            while (choice != 1 && choice != 2) {
-                choice = scanner.nextInt();
-            }
-            
+            play.showWinner(winner);
+            playing = play.replay();
         }
+        System.out.println("\n\t\tTHANK YOU FOR PLAYING !");
     }
 }

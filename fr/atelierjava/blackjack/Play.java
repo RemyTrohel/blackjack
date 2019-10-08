@@ -45,8 +45,11 @@ public class Play {
     }
 
     public void showWinner(Player winner) {
-        System.out.println("\n*********************************************************");            
-        if (winner.getName().equals("Player")) {
+        System.out.println("\n*********************************************************");
+        if (winner == null) {
+            System.out.println("\t\t\tDRAW !");
+        }
+        else if (winner.getName().equals("Player")) {
             System.out.println("\t\t\tYOU WIN !");
         } else {
             System.out.println("\t\t\tYOU LOSE !");
@@ -66,9 +69,14 @@ public class Play {
     public void welcomeMessage() {
         System.out.println("*********************************************************");
         System.out.println("*                                                       *");
-        System.out.println("*                                                       *");
+        System.out.println("*             WELCOME YOU NAUGHTY GAMBLER !             *");
         System.out.println("*                                                       *");
         System.out.println("*********************************************************");
+        System.out.print("\nPress enter to continue : \n>");
+        String choice = "waiting for player input";
+        while (!choice.isEmpty()) {
+            choice = scanner.nextLine();
+        }
     }
 
     public Player game() {
@@ -80,13 +88,13 @@ public class Play {
         int card;
         for (int i = 1; i <= 2; i++) {
             card = cards.get(0);
-            player.getCards().add(card);
+            player.getHand().add(card);
             cards.remove(0);
         }
 
         // The dealer gives one card face up and one card face down to himself.
         card = cards.get(0);
-        dealer.getCards().add(card);
+        dealer.getHand().add(card);
         cards.remove(0);
         int hiddenCard = cards.get(0);
         cards.remove(0);
@@ -101,7 +109,7 @@ public class Play {
             }
             if (choice.toUpperCase().equals("Y")) {
                 card = cards.get(0);
-                player.getCards().add(card);
+                player.getHand().add(card);
                 cards.remove(0);
             } else {
                 playing = false;
@@ -110,7 +118,7 @@ public class Play {
         }
         
         // The dealer will turn up his face-down card :
-        dealer.getCards().add(hiddenCard);
+        dealer.getHand().add(hiddenCard);
         System.out.println("\n\t\tThe dealer reveals his card : " + hiddenCard);
         this.showHands(false);
 
@@ -128,12 +136,13 @@ public class Play {
         // the dealer must count the ace as 11 and stop.
         while (dealer.getTotal(false) < 17 && dealer.getTotal(true) <= 21) {
             card = cards.get(0);
-            dealer.getCards().add(card);
+            dealer.getHand().add(card);
             System.out.println("\n\t\tThe dealer pick anoter card : " + card);
             cards.remove(0);
         }
 
         this.showHands(false);
+        this.showScores();
         // If the dealer score is over 21, the player wins.
         if (dealer.getTotal(false) > 21) {
             return player;
@@ -143,7 +152,7 @@ public class Play {
         int playerTotal = player.getBestResult();
         int dealerTotal = dealer.getBestResult();
 
-        return playerTotal > dealerTotal ? player : dealer;
+        return playerTotal == dealerTotal ? null : playerTotal > dealerTotal ? player : dealer;
     }
 
     public static void main(String[] args) {

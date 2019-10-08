@@ -16,10 +16,10 @@ public class Deck {
             cards.add(i);
         }
         for (int i = 1; i <= 4; i++) {
-            cards.add(10);
-            cards.add(10);
-            cards.add(10);
-            cards.add(10);
+            cards.add(10); // ten
+            cards.add(10); // jack
+            cards.add(10); // queen
+            cards.add(10); // king
         }
         Collections.shuffle(cards);
     }

@@ -5,11 +5,11 @@ import java.util.List;
 
 public class Player {
     private String name;
-    private List<Integer> cards;
+    private List<Integer> hand;
 
     public Player(String name) {
         this.name = name;
-        this.cards = new ArrayList<Integer>();
+        this.hand = new ArrayList<Integer>();
     }
 
     public String getName() {
@@ -20,17 +20,17 @@ public class Player {
         this.name = name;
     }
 
-    public List<Integer> getCards() {
-        return cards;
+    public List<Integer> getHand() {
+        return hand;
     }
 
-    public void setCards(List<Integer> cards) {
-        this.cards = cards;
+    public void setHand(List<Integer> hand) {
+        this.hand = hand;
     }
 
     public int getTotal(boolean higherAce) {
         int total = 0;
-        for (int card : cards) {
+        for (int card : hand) {
             if (card == 1 && higherAce) {
                 card = 11;
             }
@@ -40,14 +40,14 @@ public class Player {
     }
 
     public int getBestResult() {
-        return this.getTotal(true) < 21 ? this.getTotal(true) : this.getTotal(false);
+        return this.getTotal(true) <= 21 ? this.getTotal(true) : this.getTotal(false);
     }
 
     public String showHand() {
-        String hand = "";
-        for (int card : cards) {
-            hand += card + " ";
+        String result = "";
+        for (int card : hand) {
+            result += card + " ";
         }
-        return hand;
+        return result;
     }
 }
